@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:woodcore_assessment/core/utils/theme/app_colors.dart';
 import 'package:woodcore_assessment/features/home/views/home_screen.dart';
 import 'package:woodcore_assessment/features/cards/views/cards_screen.dart';
@@ -32,59 +33,72 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light, // White icons on Android
+        statusBarBrightness: Brightness.dark, // White icons on iOS
+        systemNavigationBarColor: Colors.white,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
-      // bottomNavigationBar: const CustomBottomNavBar(),
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
+      child: SafeArea(
+        top:
+            false, 
+        child: Scaffold(
+          body: IndexedStack(
+            index: _currentIndex,
+            children: _screens,
+          ),
+          // bottomNavigationBar: const CustomBottomNavBar(),
+          bottomNavigationBar: Container(
+            height: 80,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 8,
+                  offset: const Offset(0, -2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Top indicator line
-            Container(
-              height: 3,
-              child: Row(
-                children: List.generate(5, (index) {
-                  return Expanded(
-                    child: Container(
-                      color: _currentIndex == index
-                          ? AppColors.primaryBlue
-                          : Colors.transparent,
-                    ),
-                  );
-                }),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Top indicator line
+                Container(
+                  height: 3,
+                  child: Row(
+                    children: List.generate(5, (index) {
+                      return Expanded(
+                        child: Container(
+                          color: _currentIndex == index
+                              ? AppColors.primaryBlue
+                              : Colors.transparent,
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+                // Bottom navigation content
+                Container(
+                  height: 60,
+                  child: Row(
+                    children: [
+                      _buildNavItem(Icons.home_outlined, Icons.home, 0),
+                      _buildNavItem(
+                          Icons.credit_card_outlined, Icons.credit_card, 1),
+                      _buildNavItem(Icons.account_balance_outlined,
+                          Icons.account_balance, 2),
+                      _buildNavItem(Icons.pie_chart, Icons.pie_chart, 3),
+                      _buildNavItem(
+                          Icons.messenger_outline, Icons.messenger_outline, 4),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            // Bottom navigation content
-            Container(
-              height: 60,
-              child: Row(
-                children: [
-                  _buildNavItem(Icons.home_outlined, Icons.home, 0),
-                  _buildNavItem(
-                      Icons.credit_card_outlined, Icons.credit_card, 1),
-                  _buildNavItem(
-                      Icons.account_balance_outlined, Icons.account_balance, 2),
-                  _buildNavItem(Icons.pie_chart, Icons.pie_chart, 3),
-                  _buildNavItem(
-                      Icons.messenger_outline, Icons.messenger_outline, 4),
-                ],
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
